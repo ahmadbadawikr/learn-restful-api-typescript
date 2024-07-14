@@ -1,0 +1,19 @@
+{
+  "name": "learn-restful-api-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmadbadawikr/learn-restful-api-typescript.git"
+  },
+  "author": "ahmadbadawikr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmadbadawikr/learn-restful-api-typescript/issues"
+  },
+  "homepage": "https://github.com/ahmadbadawikr/learn-restful-api-typescript#readme"
+}
