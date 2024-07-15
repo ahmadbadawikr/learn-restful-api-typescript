@@ -2,7 +2,7 @@
 import { User } from "@prisma/client";
 import { prismaClient } from "../application/database"; // Import Prisma client for database operations
 import { ResponseError } from "../error/response-error"; // Import custom error class for handling response errors
-import { CreateUserRequest, LoginUserRequest, toUserResponse, UserResponse } from "../model/user-model"; // Import user model types and conversion functions
+import { CreateUserRequest, LoginUserRequest, toUserResponse, UpdateUserRequest, UserResponse } from "../model/user-model"; // Import user model types and conversion functions
 import { UserValidation } from "../validation/user-validation"; // Import user validation schema
 import { Validation } from "../validation/validation"; // Import general validation utility
 import bcrypt from "bcrypt"; // Import bcrypt for password hashing
@@ -82,5 +82,26 @@ export class UserService {
 
     static async get(user: User): Promise<UserResponse> {
         return toUserResponse(user);
+    }
+
+    static async update(user: User, request: UpdateUserRequest): Promise<UserResponse> {
+        const updateRequest = Validation.validate(UserValidation.UPDATE, request);
+
+        if (updateRequest.name) {
+            user.name = updateRequest.name;
+        }
+
+        if(updateRequest.password){
+            user.password = await bcrypt.hash(updateRequest.password, 10);
+        }
+
+        const result = await prismaClient.user.update({
+            where: {
+                username: user.username
+            },
+            data: user
+        })
+
+        return toUserResponse(result);
     }
 }

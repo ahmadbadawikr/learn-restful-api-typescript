@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express"; // Import necessary types from Express
-import { CreateUserRequest, LoginUserRequest } from "../model/user-model"; // Import the CreateUserRequest type
+import { CreateUserRequest, LoginUserRequest, UpdateUserRequest } from "../model/user-model"; // Import the CreateUserRequest type
 import { UserService } from "../services/user-service"; // Import the UserService class
 import { UserRequest } from "../type/user-request";
 
@@ -53,6 +53,19 @@ export class UserController {
             
             const response = await UserService.get(req.user!);
             
+            res.status(200).json({
+                data: response
+            });
+        } catch (e) {
+            // Pass any errors to the next middleware for error handling
+            next(e);
+        }
+    }
+
+    static async update(req: UserRequest, res: Response, next: NextFunction) {
+        try {
+            const request: UpdateUserRequest = req.body as UpdateUserRequest
+            const response = await UserService.update(req.user!, request);
             res.status(200).json({
                 data: response
             });

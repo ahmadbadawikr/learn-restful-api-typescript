@@ -19,6 +19,11 @@ export type LoginUserRequest = {
     password: string; // The password of the new user
 }
 
+export type UpdateUserRequest = {
+    name?: string;     // The name of the new user
+    password?: string; // The password of the new user
+}
+
 /**
  * Converts a User object from the database to a UserResponse object.
  * 
