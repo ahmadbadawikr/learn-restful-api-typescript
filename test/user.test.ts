@@ -2,6 +2,7 @@ import supertest from "supertest"
 import { web } from "../src/application/web"
 import { logger } from "../src/application/logging"
 import { UserTest } from "./test-util"
+import { response } from "express"
 
 describe("POST /api/users", ()=>{
 
@@ -77,4 +78,38 @@ describe("POST /api/users/login", () => {
         expect(response.body.errors).toBeDefined();
     })
 
+})
+
+describe("GET /api/users/current", () => {
+    beforeEach(async () => {
+        await UserTest.create();
+
+    })
+
+    afterEach(async () => {
+        await UserTest.delete();
+    })
+
+    it("Should be able to get user", async () => {
+        const response = await supertest(web)   
+            .get("/api/users/current")
+            .set("X-API-TOKEN", "test")
+
+        logger.debug(response.body)
+        expect(response.status).toBe(200);
+        expect(response.body.data.username).toBe("test")
+        expect(response.body.data.name).toBe("test")
+    })
+
+    it("Should reject getting user if token is invalid", async () => {
+        const response = await supertest(web)   
+            .get("/api/users/current")
+            .set("X-API-TOKEN", "wrong")
+
+        logger.debug(response.body)
+        expect(response.status).toBe(401);
+        expect(response.body.errors).toBeDefined();
+    })
+
+    
 })

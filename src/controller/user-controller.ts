@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express"; // Import necessary types from Express
 import { CreateUserRequest, LoginUserRequest } from "../model/user-model"; // Import the CreateUserRequest type
 import { UserService } from "../services/user-service"; // Import the UserService class
+import { UserRequest } from "../type/user-request";
 
 /**
  * UserController class to handle incoming HTTP requests related to user operations.
@@ -37,6 +38,20 @@ export class UserController {
             const request: LoginUserRequest = req.body as LoginUserRequest;
             
             const response = await UserService.login(request);
+            
+            res.status(200).json({
+                data: response
+            });
+        } catch (e) {
+            // Pass any errors to the next middleware for error handling
+            next(e);
+        }
+    }
+
+    static async get(req: UserRequest, res: Response, next: NextFunction) {
+        try {
+            
+            const response = await UserService.get(req.user!);
             
             res.status(200).json({
                 data: response

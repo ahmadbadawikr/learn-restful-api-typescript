@@ -79,4 +79,8 @@ export class UserService {
         return response
 
     }
+
+    static async get(user: User): Promise<UserResponse> {
+        return toUserResponse(user);
+    }
 }
