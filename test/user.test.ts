@@ -183,3 +183,44 @@ describe("PATCH /api/users/current", () => {
 
     })
 })
+
+describe("DELETE /api/users/current", () => {
+    beforeEach(async () => {
+        await UserTest.create();
+
+    })
+
+    afterEach(async () => {
+        await UserTest.delete();
+    })
+
+    it('should be able to logout', async () => {
+        const response = await supertest(web)
+            .delete("/api/users/current")
+            .set("X-API-TOKEN", "test")
+            .send({
+                password: "right"
+            });
+
+        logger.debug(response.body);
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe("OK")
+
+        const user = await UserTest.get();
+        expect(user.token).toBeNull();
+
+
+    })
+
+    it('should reject logout user if token is wrong', async () => {
+        const response = await supertest(web)
+            .delete("/api/users/current")
+            .set("X-API-TOKEN", "wrong")
+
+        logger.debug(response.body);
+        expect(response.status).toBe(401);
+        expect(response.body.errors).toBeDefined();
+
+    })
+
+})
