@@ -6,7 +6,7 @@ import { CreateUserRequest, LoginUserRequest, toUserResponse, UserResponse } fro
 import { UserValidation } from "../validation/user-validation"; // Import user validation schema
 import { Validation } from "../validation/validation"; // Import general validation utility
 import bcrypt from "bcrypt"; // Import bcrypt for password hashing
-
+import { v4 as uuid } from "uuid";
 /**
  * UserService class to handle user-related operations such as registration.
  */
@@ -49,5 +49,34 @@ export class UserService {
 
     static async login(request: LoginUserRequest): Promise<UserResponse> {
         const loginRequest = Validation.validate(UserValidation.LOGIN, request);
+
+        let user = await prismaClient.user.findUnique({
+            where: {
+                username: loginRequest.username
+            }
+        });
+
+        if(!user) {
+            throw new ResponseError(401, "Username or Password is wrong");
+        }
+
+        const isPasswordValid = await bcrypt.compare(loginRequest.password, user.password);
+        if(!isPasswordValid) {
+            throw new ResponseError(401, "Username or Password is wrong");
+        }
+
+        user = await prismaClient.user.update({
+            where: {
+                username: loginRequest.username
+            },
+            data: {
+                token: uuid()
+            }
+        });
+
+        const response = toUserResponse(user);
+        response.token = user.token!;
+        return response
+
     }
 }

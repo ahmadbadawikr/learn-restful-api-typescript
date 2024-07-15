@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express"; // Import necessary types from Express
-import { CreateUserRequest } from "../model/user-model"; // Import the CreateUserRequest type
+import { CreateUserRequest, LoginUserRequest } from "../model/user-model"; // Import the CreateUserRequest type
 import { UserService } from "../services/user-service"; // Import the UserService class
 
 /**
@@ -24,6 +24,20 @@ export class UserController {
             const response = await UserService.register(request);
             
             // Send the response with status 200 and the registered user data
+            res.status(200).json({
+                data: response
+            });
+        } catch (e) {
+            // Pass any errors to the next middleware for error handling
+            next(e);
+        }
+    }
+    static async login(req: Request, res: Response, next: NextFunction) {
+        try {
+            const request: LoginUserRequest = req.body as LoginUserRequest;
+            
+            const response = await UserService.login(request);
+            
             res.status(200).json({
                 data: response
             });

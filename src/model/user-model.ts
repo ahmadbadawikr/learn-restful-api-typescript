@@ -31,3 +31,4 @@ export function toUserResponse(user: User): UserResponse {
         username: user.username // Map the username property from the User object
     }
 }
+
