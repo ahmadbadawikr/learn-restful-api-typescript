@@ -9,7 +9,7 @@ export type UserResponse = {
 
 // Define the CreateUserRequest type, which is used to represent the data required to create a new user
 export type CreateUserRequest = {
-    username: string; // The username of the new user
+    username: string // The username of the new user
     name: string;     // The name of the new user
     password: string; // The password of the new user
 }
